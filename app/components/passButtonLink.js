@@ -43,16 +43,6 @@ export default  function PASSButtonLink({ href, text, order_id }) {
   // Get current date-time as Request DateTime
   var current_datetime = getCurrentDate();
     
-  useEffect(() => {
-    const intHandler = setInterval(async () => {
-      const res = await fetch('/api/pass-check-status');
-      const data = await res.json();
-      setIsPASS(data.token === '0000');
-    }, 3000);
-
-  //  return () => clearInterval(intHandler); // cleanup
-  }, []);
-  
   // Function to fetch data from the API route
   const fetchData = async () => {
     try {
