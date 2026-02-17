@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 
 export default function TestPage() {
 
+const [selected, setSelected] = useState("dev");
 const [orderID, setOrderID] = useState("");
 
   useEffect(() => {
@@ -29,12 +30,22 @@ const [orderID, setOrderID] = useState("");
   return (
     <>
       {(orderID != "") && (
-        <div style={{ padding: '20px', textAlign: 'center' }}>
-          <PASSButtonLink 
-            href="#" 
-            text="Personal Verification (with PASS) "
-            order_id={"" + orderID + ""}
-          />
+        <div style={{ padding: '20px'}}>
+
+        <div className="flex justify-center space-x-4">
+          <div className="bg-blue-300 p-6"><input type="radio" value="dev" checked={selected === "dev"} onChange={(e) => setSelected(e.target.value)} /> DEV </div>
+          <div className="bg-green-300 p-6"><input type="radio" value="live" checked={selected === "live"} onChange={(e) => setSelected(e.target.value)} /> Live/STAG </div>
+        </div>
+
+        <br/><p>Selected: {selected}</p><br/><br/>
+
+        <PASSButtonLink 
+          href="#" 
+          text="Personal Verification (with PASS) "
+          order_id={"" + orderID + ""}
+          env={"" + selected + ""}
+        />
+          
         </div>
       )}
     </>

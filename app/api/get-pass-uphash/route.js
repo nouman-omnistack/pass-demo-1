@@ -1,6 +1,3 @@
-// ./api/get-pass-uphash/route.js  // API route to get up_hash from PASS Personal Verification API
-
-// import fs from 'fs';
 import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server'
 import { createPrivateKeyObject } from '../../utilities/funUtilities' 
@@ -16,9 +13,13 @@ export async function POST(request) {
 
         const body = await request.json();
 
-        var site_cd    = process.env.TEMP_KR_OB_PASS_SITE_CD;
-        var web_siteid = process.env.TEMP_KR_OB_PASS_WEB_SITEID;
-        var web_siteid_hashYN = process.env.TEMP_KR_OB_PASS_WEB_SITEID_HASHYN;
+        console.log('body: ', body)
+
+        var site_cd    = (body.env == 'dev') ? process.env.TEMP_KR_OB_PASS_SITE_CD : process.env.KR_OB_PASS_SITE_CD;
+        var web_siteid = (body.env == 'dev') ? process.env.TEMP_KR_OB_PASS_WEB_SITEID : process.env.KR_OB_PASS_WEB_SITEID;
+        var web_siteid_hashYN = (body.env == 'dev') ? process.env.TEMP_KR_OB_PASS_WEB_SITEID_HASHYN : process.env.KR_OB_PASS_WEB_SITEID_HASHYN;
+        
+        console.log('site_cd: ', site_cd)
 
         var ct_type    = "HAS";
         var ordr_idxx  = body.order_id;
@@ -27,8 +28,8 @@ export async function POST(request) {
         var hash_data = site_cd + "^" + ct_type + "^" + body.datetime; 
 
         const privateKeyObj = createPrivateKeyObject(
-            process.env.TEMP_KR_OB_PASS_PVT_CERT,
-            process.env.TEMP_KR_OB_PASS_PVT_CERT_KEY_PASS,
+            (body.env == 'dev') ? process.env.TEMP_KR_OB_PASS_PVT_CERT : process.env.KR_OB_PASS_PVT_CERT ,
+            (body.env == 'dev') ? process.env.TEMP_KR_OB_PASS_PVT_CERT_KEY_PASS : process.env.KR_OB_PASS_PVT_CERT_KEY_PASS ,
         )
 
         // Generate signature data using KeyObject
@@ -40,7 +41,7 @@ export async function POST(request) {
         // Required data for up_hash creation process refer to KCP API document page# 13/27 
         var req_data = {
                   site_cd: site_cd,
-            kcp_cert_info: process.env.TEMP_KR_OB_PASS_PUB_CERT,
+            kcp_cert_info: (body.env == 'dev') ? process.env.TEMP_KR_OB_PASS_PUB_CERT : process.env.KR_OB_PASS_PUB_CERT,
                 ordr_idxx: ordr_idxx,
                   ct_type: ct_type,
                web_siteid: web_siteid,
@@ -48,8 +49,10 @@ export async function POST(request) {
             kcp_sign_data: kcp_sign_data
         };
 
+        console.log('req_data: ', req_data)
+
         // UpHash Key (up_hash) Creation 
-        const response = await fetch(process.env.TEMP_KR_OB_PASS_CERT_URL, {
+        const response = await fetch((body.env == 'dev') ? process.env.TEMP_KR_OB_PASS_CERT_URL : process.env.KR_OB_PASS_CERT_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -78,12 +81,12 @@ export async function POST(request) {
                     param_opt_1: "opt1",
                     param_opt_2: "opt2",
                     param_opt_3: "opt3",
-                    web_site_return_url: process.env.TEMP_KR_OB_PASS_CALLBACK_URL_KR,
+                    web_site_return_url: (body.env == 'dev') ? process.env.TEMP_KR_OB_PASS_CALLBACK_URL_KR : process.env.KR_OB_PASS_CALLBACK_URL_KR,
                     cert_enc_use_ext: "Y",
                     api_res_kcp_merchant_time: data.kcp_merchant_time,
                     api_res_kcp_cert_lib_ver: data.kcp_cert_lib_ver,
                     kcp_page_submit_yn: "Y",
-                    pass_form_url: process.env.TEMP_KR_OB_PASS_FORM_URL
+                    pass_form_url: (body.env == 'dev') ? process.env.TEMP_KR_OB_PASS_FORM_URL : process.env.KR_OB_PASS_FORM_URL
                 }, { status: 200 });
             } else {
                 return NextResponse.json({ api_res_msg: 'NotFound' }, { status: 200 });

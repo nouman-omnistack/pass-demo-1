@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { getCurrentDate, authTypeCheck } from '../utilities/funUtilities';
 
-export default  function PASSButtonLink({ href, text, order_id }) {
+export default  function PASSButtonLink({ href, text, order_id, env }) {
 
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
@@ -22,7 +22,7 @@ export default  function PASSButtonLink({ href, text, order_id }) {
             param_opt_1: "opt1",
             param_opt_2: "opt2",
             param_opt_3: "opt3",
-                ret_url: "http://localhost:3001",
+                ret_url: "",
        cert_enc_use_ext: "Y",
       kcp_merchant_time: "",
        kcp_cert_lib_ver: "",
@@ -52,9 +52,10 @@ export default  function PASSButtonLink({ href, text, order_id }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ order_id: order_id, datetime: current_datetime }),
+        body: JSON.stringify({ order_id: order_id, datetime: current_datetime, env: env }),
       }); 
 
+      console.log('apiResp.status: ', apiResp.status)
       // Parse the response
       if (apiResp.status == 500) {
 
@@ -68,7 +69,9 @@ export default  function PASSButtonLink({ href, text, order_id }) {
               setError("Alert! Personal Verification Data Not Found.");
           } else {
 
-            setResponse(resData.api_res_cd, ' - ', resData.api_res_msg);
+            console.log('resData: ', resData)
+
+            setResponse('[ SiteCode: ' + resData.site_cd + ' ] - ' + resData.api_res_cd + ' - ' + resData.api_res_msg);
 
             if (resData.api_res_cd == "0000" && resData.api_res_up_hash != "") {
                 setError(null);
@@ -114,7 +117,7 @@ export default  function PASSButtonLink({ href, text, order_id }) {
     button: {
       display: 'inline-block',
       padding: '20px 30px',
-      backgroundColor: isPASS ? '#00AA3A' : '#FA2828', 
+      backgroundColor: isPASS ? '#00AA3A' : '#FF3A4A', 
       color: '#fff',
       borderRadius: '5px',
       textAlign: 'center',
@@ -143,7 +146,7 @@ export default  function PASSButtonLink({ href, text, order_id }) {
       {response && (
         <div>
          <br/><br/><br/>
-         <h2>Response: </h2>
+         <h3>Response: </h3>
          <p>{response} </p>
 
          <form name="form_auth" method="post" action={formData.pass_form_url}>
