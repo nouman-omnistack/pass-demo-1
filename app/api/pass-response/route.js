@@ -2,7 +2,7 @@
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request) {
+export async function GET(request) {
 
   try {
   
@@ -38,22 +38,22 @@ export async function POST(request) {
 }
 
 
-export async function GET(request) {
+// export async function GET(request) {
  
-    const contentType = request.headers.get('content-type');
+//     const contentType = request.headers.get('content-type');
   
-    let body;
-    if (contentType?.includes('application/json')) {
-      body = await request.json();
-    } else if (contentType?.includes('application/x-www-form-urlencoded')) {
-      body = Object.fromEntries((await request.formData()).entries());
-      console.log(' >>> wokring by application/x-www-form-urlencoded . . . ');
-    } else if (contentType?.includes('multipart/form-data')) {
-      body = await request.formData();
-    } else {
-      body = await request.text();
-    }
+//     let body;
+//     if (contentType?.includes('application/json')) {
+//       body = await request.json();
+//     } else if (contentType?.includes('application/x-www-form-urlencoded')) {
+//       body = Object.fromEntries((await request.formData()).entries());
+//       console.log(' >>> wokring by application/x-www-form-urlencoded . . . ');
+//     } else if (contentType?.includes('multipart/form-data')) {
+//       body = await request.formData();
+//     } else {
+//       body = await request.text();
+//     }
 
-  return NextResponse.json({ callback_request: request, res_cd: body.res_cd, res_msg: body.res_msg, response: body });
+//   return NextResponse.json({ callback_request: request, res_cd: body.res_cd, res_msg: body.res_msg, response: body });
 
-}
+// }
