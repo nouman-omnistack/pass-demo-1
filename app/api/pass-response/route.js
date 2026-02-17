@@ -1,8 +1,5 @@
 // 'use server';
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-
-import { cookies } from 'next/headers';
 
 export async function POST(req) {
   const formData = await req.formData();
