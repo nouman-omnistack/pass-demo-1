@@ -140,14 +140,16 @@ export default  function PASSButtonLink({ href, text, order_id, env }) {
       </Link>
 
       {error && (
-        <div style={{ color: 'red' }}> { error } </div>
+        <div style={{ color: 'red',  padding: '10px' }}> { error } </div>
       )}
 
       {response && (
         <div>
-         <br/><br/><br/>
-         <h3>Response: </h3>
-         <p>{response} </p>
+         <br/><br/>
+         <div style={{ padding: '10px' }}>
+          <h3>API Response: </h3>
+          <p>{response} </p>
+         </div>
 
          <form name="form_auth" method="post" action={formData.pass_form_url}>
             <input type="text" name="ordr_idxx" value={formData.ordr_idxx} onChange={handleChange} />
